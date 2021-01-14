@@ -11,9 +11,18 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread billaroidThread;
     Paint painter = new Paint();
+    Ball firstBall = new Ball(25);
+    Ball secondBall = new Ball(25);
+
+    ArrayList<Ball> ballsInGame = new ArrayList<>();
 
     public Billaroid(Context context) {
         super(context);
@@ -92,10 +101,9 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
                 break;
             case MotionEvent.ACTION_DOWN:
                 int historySize = event.getHistorySize();
-                if(historySize >= 2 ) {
+                if(historySize >= 2) {
                     Point inicio = new Point(event.getHistoricalX(0),event.getHistoricalY(0));
                     Point fin = new Point(event.getHistoricalX(event.getHistorySize() - 1),event.getHistoricalY(event.getHistorySize() - 1));
-
                 }
                 break;
             case MotionEvent.ACTION_BUTTON_PRESS:
@@ -105,21 +113,35 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
         }
         return true;
     }
+    Random r = new Random();
 
-    float vel = 0;
     float current_x = -1;
     float current_y = -1;
     final float RADIUS = 20f;
     float radius = RADIUS;
+
     public void newDraw(Canvas canvas) {
-        float width = canvas.getWidth(),  high = canvas.getHeight();
-        if(current_x == -1) {
-            current_x = width / 2;
-        }
-        if(current_y == -1) {
-            current_y = high / 2;
-        }
         canvas.drawColor(Color.WHITE);
-        canvas.drawCircle(current_x, current_y, radius, painter);
+        if(ballsInGame.size() < 10) {
+            ballsInGame.add(new Ball(25));
+        }
+        for (Ball b : ballsInGame) {
+            if(!b.hasPosition()) {
+                b.setPosition(new Point(r.nextInt(canvas.getWidth()),r.nextInt(canvas.getHeight())));
+                b.setxVelocity(r.nextDouble()*10);
+                b.setyVelocity(r.nextDouble()*10);
+            }
+            for(Ball ballDump: ballsInGame) {
+
+            }
+            b.move(canvas);
+        }
+        if(Utils.isBetween(r.nextInt(100),97,100)) {
+            Ball accelerated = ballsInGame.get(r.nextInt(ballsInGame.size()));
+            double acceleration = Utils.clamp(r.nextDouble()*2, 0.5,1);
+            accelerated.setxVelocity(accelerated.getxVelocity()/acceleration);
+            accelerated.setyVelocity(accelerated.getyVelocity()/acceleration);
+        }
+        //canvas.drawCircle(current_x, current_y, radius, painter);
     }
 }
