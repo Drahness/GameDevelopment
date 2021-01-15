@@ -1,11 +1,17 @@
 package self.joanciscar.gamedevelopment;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 public class Ball {
+    private int color = Color.BLACK;
     private Point position;
     private final Paint painter = new Paint();
+    private boolean isDumpable = true;
     private final double radius;
     private final double DECELERACION = 0.8;
     private double xVelocity;
@@ -19,9 +25,14 @@ public class Ball {
         canvas.drawCircle((float) position.getX(),(float) position.getY(),(float) this.radius, painter);
     }
 
-    public void move(Canvas canvas) {
-        double maxHeight = canvas.getHeight() - radius;
-        double maxWitdh = canvas.getWidth() - radius;
+    public void changeColor(int color) {
+        this.color = color;
+        painter.setColor(color);
+    }
+
+    public void move(int height, int width) {
+        double maxHeight = height - radius;
+        double maxWitdh = width - radius;
         double minHeight = 0 + radius;
         double minWidth = 0 + radius;
         double nextY = yVelocity + position.getY();
@@ -45,7 +56,6 @@ public class Ball {
             setyVelocity(-(getyVelocity()*DECELERACION));
         }
         this.position = new Point(nextX,nextY);
-        this.paint(canvas);
     }
     public boolean isMoving() {
         return 0 == xVelocity && 0 == yVelocity;
@@ -84,6 +94,11 @@ public class Ball {
         this.yVelocity = yVelocity;
     }
 
+    public void setVelocity(double xVelocity, double yVelocity) {
+        this.xVelocity = xVelocity;
+        this.yVelocity = yVelocity;
+    }
+
     public void setPosition(Point position) {
         this.position = position;
     }
@@ -101,8 +116,25 @@ public class Ball {
          // Maybe todo its a lot of simple
     }
 
-    public void processDump(Ball anotherBall) {
-        //if() // TODO
+    public void processDump(Ball anotherBall,int height, int width) {
+        if(position.distance(anotherBall.position) < this.radius + anotherBall.radius && isDumpable) {
+            // TODO A hit is being produced.
+            System.out.println(this.toString());
+            System.out.println("Hit");
+            System.out.println(anotherBall.toString());
+            this.setVelocity(-this.getxVelocity(),-this.getyVelocity());
+            anotherBall.setVelocity(-anotherBall.getxVelocity(),-anotherBall.getyVelocity());
+            do {
+                this.move(height, width);
+                anotherBall.move(height, width);
+            } while (position.distance(anotherBall.position) <= this.radius + anotherBall.radius);
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        return color + " / "+ position != null ? position.toString() : "null" + " - r"+radius;
     }
 }
 /*

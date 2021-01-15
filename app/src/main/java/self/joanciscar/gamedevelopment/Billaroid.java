@@ -5,11 +5,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,21 +122,27 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
     final float RADIUS = 20f;
     float radius = RADIUS;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void newDraw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
         if(ballsInGame.size() < 10) {
-            ballsInGame.add(new Ball(25));
+            Ball b = new Ball(25);
+            ballsInGame.add(b);
+            b.changeColor(Color.rgb(r.nextFloat(),r.nextFloat(),r.nextFloat()));
+            b.setPosition(new Point(r.nextInt(canvas.getWidth()),r.nextInt(canvas.getHeight())));
+            b.setxVelocity(r.nextDouble()*10);
+            b.setyVelocity(r.nextDouble()*10);
         }
         for (Ball b : ballsInGame) {
-            if(!b.hasPosition()) {
-                b.setPosition(new Point(r.nextInt(canvas.getWidth()),r.nextInt(canvas.getHeight())));
-                b.setxVelocity(r.nextDouble()*10);
-                b.setyVelocity(r.nextDouble()*10);
+            if(b.hasPosition()) {
+                for (Ball ballDump : ballsInGame) {
+                    if (ballDump != b) {
+                        b.processDump(ballDump,canvas.getHeight(),canvas.getWidth());
+                    }
+                }
+                b.move(canvas.getHeight(),canvas.getWidth());
+                b.paint(canvas);
             }
-            for(Ball ballDump: ballsInGame) {
-
-            }
-            b.move(canvas);
         }
         if(Utils.isBetween(r.nextInt(100),97,100)) {
             Ball accelerated = ballsInGame.get(r.nextInt(ballsInGame.size()));
