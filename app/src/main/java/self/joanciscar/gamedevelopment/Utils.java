@@ -15,6 +15,7 @@ public class Utils {
     public static double clamp(int value,int min, int max) {
         return clamp((float)value,min,max);
     }
+
     public static double clamp(float value,float min, float max) {
         return clamp((double) value,min,max);
     }

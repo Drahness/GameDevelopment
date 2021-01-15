@@ -1,6 +1,6 @@
 package self.joanciscar.gamedevelopment;
 
-public class Point {
+public class Vector {
     private final double x;
     private final double y;
 
@@ -12,19 +12,19 @@ public class Point {
         return y;
     }
 
-    public Point(float x, float y) {
+    public Vector(float x, float y) {
         this.x=x;
         this.y=y;
     }
-    public Point(double x, double y) {
+    public Vector(double x, double y) {
         this.x=x;
         this.y=y;
     }
-    public Point(int x, int y) {
+    public Vector(int x, int y) {
         this.x=x;
         this.y=y;
     }
-    public double distance(Point other) {
+    public double distance(Vector other) {
         return this.distance(other.x,other.y);
     }
 
@@ -57,9 +57,9 @@ public class Point {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Point)) return false;
+        if (!(o instanceof Vector)) return false;
 
-        Point point = (Point) o;
+        Vector point = (Vector) o;
 
         if (Double.compare(point.x, x) != 0) return false;
         return Double.compare(point.y, y) == 0;
@@ -83,8 +83,19 @@ public class Point {
      * @param direction the destination, this point will be an angle,
      * @return new position of the entity
      */
-    public static Point newPosition(double units, Point begining, Point direction) {
+    public static Vector newVector(double units, Vector begining, Vector direction) {
         double alfa = Math.atan( (direction.y - begining.y) / (direction.x - begining.x));
-        return new Point(units*Math.cos(alfa),units*Math.sin(alfa));
+        boolean inverseX = false, inverseY = false;
+        if(begining.getX() > direction.getX()) {
+            inverseX = true;
+        }
+        if(begining.getY() > direction.getY()) {
+            inverseY = true;
+        }
+        double x = units*Math.cos(alfa);
+        double y = units*Math.sin(alfa);
+        return new Vector(
+                inverseX ? - x: x,
+                inverseY ? - y: y);
     }
 }
