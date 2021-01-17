@@ -18,13 +18,17 @@ public interface MovableEntity extends GameEntity {
         this.setyVelocity(vector.getY());
     }
 
+    default void setVelocity(double xVelocity, double yVelocity) {
+        this.setxVelocity(xVelocity);
+        this.setyVelocity(yVelocity);
+    }
+
     void setxVelocity(double xVelocity);
 
     double getyVelocity();
 
     void setyVelocity(double yVelocity);
 
-    void setVelocity(double xVelocity, double yVelocity);
 
     void transferEnergy(MovableEntity movableEntity);
 }

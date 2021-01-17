@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 public class Hole extends AbstractGameEntity {
-    private static final double HOLE_RADIUS = 60;
+    private static final double HOLE_RADIUS = 50;
 
     @Override
     public void paint(Canvas canvas) {
@@ -17,9 +17,18 @@ public class Hole extends AbstractGameEntity {
     public void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width) {
         if(gameEntity.isTangible()) {
             if(gameEntity instanceof Ball) {
-                gameEntity.setPosition(null);
-                gameEntity.setTangible(false);
-                gameEntity.setInGame(false);
+                Ball b = (Ball) gameEntity;
+                if(gameEntity.hasPosition() && this.getPosition().distance(gameEntity.getPosition()) < (HOLE_RADIUS/2)+HOLE_RADIUS) {
+                    if(!(b instanceof PlayerBall)) {
+                        b.setPosition(null);
+                        b.setTangible(false);
+                        b.setInGame(false);
+                    }
+                    else {
+                        b.stopMovement();
+                        b.setPosition(Billaroid.playerInitialVector.getCopy());
+                    }
+                }
             }
         }
     }

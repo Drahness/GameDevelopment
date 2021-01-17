@@ -5,11 +5,10 @@ import android.graphics.Paint;
 public abstract class AbstractMovableEntity extends AbstractGameEntity implements MovableEntity {
     private final Paint painter = new Paint();
     private Vector position;
+    private final Vector velocity = new Vector(0,0);
     public final double DECELERACION_POR_CHOQUE = 0.7;
     public final double DECELERACION_POR_ENTORNO = 0.99;
     private double mass = 1;
-    private double xVelocity;
-    private double yVelocity;
     private boolean movable = true;
 
     public void setMovable(boolean movable) {
@@ -32,38 +31,36 @@ public abstract class AbstractMovableEntity extends AbstractGameEntity implement
 
     @Override
     public boolean isMoving() {
-        return 0 != xVelocity && 0 != yVelocity;
+        return 0 != this.getxVelocity() && 0 != this.getyVelocity();
     }
 
     @Override
     public void stopMovement() {
-        xVelocity = 0;
-        yVelocity = 0;
+        this.setyVelocity(0);
+        this.setxVelocity(0);
     }
 
     @Override
     public double getxVelocity() {
-        return xVelocity;
+        return this.velocity.getX();
     }
 
     @Override
     public void setxVelocity(double xVelocity) {
-        this.xVelocity = xVelocity;
+        this.velocity.setX(xVelocity);
     }
 
     @Override
     public double getyVelocity() {
-        return yVelocity;
+        return this.velocity.getY();
     }
 
     @Override
     public void setyVelocity(double yVelocity) {
-        this.yVelocity = yVelocity;
+        this.velocity.setY(yVelocity);
     }
 
-    @Override
-    public void setVelocity(double xVelocity, double yVelocity) {
-        this.xVelocity = xVelocity;
-        this.yVelocity = yVelocity;
+    public Vector getVelocity() {
+        return this.velocity;
     }
 }
