@@ -14,7 +14,7 @@ public class Hole extends AbstractGameEntity {
 
 
     @Override
-    public void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width) {
+    public void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width, boolean callOther) {
         if(gameEntity.isTangible()) {
             if(gameEntity instanceof Ball) {
                 Ball b = (Ball) gameEntity;

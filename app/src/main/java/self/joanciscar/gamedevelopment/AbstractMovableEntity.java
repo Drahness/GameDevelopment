@@ -63,4 +63,9 @@ public abstract class AbstractMovableEntity extends AbstractGameEntity implement
     public Vector getVelocity() {
         return this.velocity;
     }
+
+    @Override
+    public double getSpeed() {
+        return Math.hypot(getxVelocity(),getyVelocity());
+    }
 }

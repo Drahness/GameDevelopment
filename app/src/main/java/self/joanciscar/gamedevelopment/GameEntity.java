@@ -20,8 +20,10 @@ public interface GameEntity {
 
     boolean hasPosition();
 
-    void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width);
-
+    void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width,boolean callOther);
+    default void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width) {
+        this.processDump(gameEntity,height,width,min_height,min_width,true);
+    }
     void setPosition(Vector position);
 
     boolean isInGame();

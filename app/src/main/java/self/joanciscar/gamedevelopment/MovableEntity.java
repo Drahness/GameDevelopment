@@ -29,6 +29,7 @@ public interface MovableEntity extends GameEntity {
 
     void setyVelocity(double yVelocity);
 
-
     void transferEnergy(MovableEntity movableEntity);
+
+    double getSpeed();
 }

@@ -30,13 +30,13 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
     private static final float BOARD_WALLS_WIDTH = 75;
     private final Random r = new Random();
     private static boolean isInitiated = false;
-    private final PlayerBall playerBall = new PlayerBall(25);
-
-    ArrayList<GameEntity> entities = new ArrayList<>();
+    private final PlayerBall playerBall = new PlayerBall();
+    private final ArrayList<GameEntity> entities = new ArrayList<>();
 
     public Billaroid(Context context) {
         super(context);
         this.getHolder().addCallback(this);
+        blackPainter.setStrokeWidth(5);
     }
 
     @Override
@@ -86,25 +86,19 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     for (GameEntity b : entities) {
                         for (GameEntity gameEntity : entities) { // ponerlo arriba de isMovable()
-                            if (gameEntity.hasPosition() && gameEntity != b) {
+                            if (gameEntity != b && gameEntity.hasPosition() && gameEntity.isTangible()) {
                                 b.processDump(gameEntity, height, width, BOARD_WALLS_HEIGHT, BOARD_WALLS_WIDTH);
                             }
                         }
-                        if(b.isMovable()) {
-                            MovableEntity movableEntity = (MovableEntity) b;
-                            if(movableEntity.isMoving()) {
-                                if (b.hasPosition()) {
-                                    /*for (GameEntity gameEntity : entities) { // ponerlo arriba de isMovable()
-                                        if (gameEntity.hasPosition() && gameEntity != b) {
-                                            b.processDump(gameEntity, height, width, BOARD_WALLS_HEIGHT, BOARD_WALLS_WIDTH);
-                                        }
-                                    }*/
-                                    movableEntity.move(height, width, BOARD_WALLS_HEIGHT, BOARD_WALLS_WIDTH);
-                                }
+                    }
+                    for (GameEntity gameEntity: entities) {
+                        if(gameEntity.isInGame() && gameEntity.isMovable()) {
+                            MovableEntity entity = (MovableEntity) gameEntity;
+                            if(entity.isMoving()) {
+                                ((MovableEntity) gameEntity).move(height, width, BOARD_WALLS_HEIGHT, BOARD_WALLS_WIDTH);
                             }
                         }
                     }
-                    //accelEntities(entities);
                 }
                 Canvas canvas = null;
                 try {
@@ -170,7 +164,6 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void newDraw(Canvas canvas) {
         canvas.drawColor(Color.GREEN);
         backgroundPainter.setColor(Color.RED);
@@ -181,25 +174,18 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawRect(0,canvas.getHeight()-BOARD_WALLS_HEIGHT,canvas.getWidth(),canvas.getHeight(), backgroundPainter);
         if(playerBall.hasFingerPressed()) {
             Vector finger = playerBall.getFingerPosition();
+
             canvas.drawLine((float) playerBall.getPosition().getX(),
                     (float) playerBall.getPosition().getY(),
                     (float) playerBall.getFingerPosition().getX(),
                     (float) playerBall.getFingerPosition().getY(),
                     this.blackPainter);
-            canvas.drawLine((float) playerBall.getPosition().getX(),
-                    (float) playerBall.getPosition().getY(),
-                    (float) playerBall.getFingerPosition().getX()+1,
-                    (float) playerBall.getFingerPosition().getY()+1,
-                    this.blackPainter);
-            canvas.drawLine((float) playerBall.getPosition().getX(),
-                    (float) playerBall.getPosition().getY(),
-                    (float) playerBall.getFingerPosition().getX()-1,
-                    (float) playerBall.getFingerPosition().getY()-1,
-                    this.blackPainter);
+
             canvas.drawCircle((float)playerBall.getFingerPosition().getX(),(float) playerBall.getFingerPosition().getY(),10,blackPainter);
         }
-        entities.forEach(b -> b.paint(canvas));
-        //canvas.drawCircle(current_x, current_y, radius, painter);
+        for (GameEntity b : entities) {
+            b.paint(canvas);
+        }
     }
 
     public void accelEntities(ArrayList<GameEntity> entities) {
@@ -217,10 +203,10 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void initGame() {
         playerBall.changeColor(Color.WHITE);
-        playerInitialVector = new Vector(width*0.5+(BOARD_WALLS_WIDTH),height*0.80);
+        playerInitialVector = new Vector(width*0.5+(BOARD_WALLS_WIDTH),height*0.20);
         playerBall.setPosition(playerInitialVector.getCopy());
         entities.add(playerBall);
-        for(int i = 0 ; i < 10 ; i++) {
+        /*for(int i = 0 ; i < 10 ; i++) {
             // todo ya que que solo añadira una bola, pero es para testeos.
             Ball b = new Ball(25);
             entities.add(b);
@@ -228,7 +214,8 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
             b.setPosition(new Vector(r.nextInt(width), r.nextInt(height))); // Ponemos la bola en un lugar aleatorio.
             b.setxVelocity(r.nextDouble() * 10);
             b.setyVelocity(r.nextDouble() * 10);
-        }
+        }*/
+        entities.addAll(Ball.getBiliardBalls(BOARD_WALLS_WIDTH,BOARD_WALLS_HEIGHT,width,height));
         for (int i = 0 ; i < 3 ; i++) {
             Hole holeRigth = new Hole();
             Hole holeLeft = new Hole();

@@ -6,7 +6,7 @@ public class PlayerBall extends Ball {
     public PlayerBall(double radius) {
         super(radius);
     }
-
+    public PlayerBall() {}
     public Vector getFingerPosition() {
         Vector cloned;
         synchronized (fingerPosition) { // TODO in odd cases can be null
