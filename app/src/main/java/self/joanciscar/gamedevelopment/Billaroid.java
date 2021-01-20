@@ -22,9 +22,9 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
     private final Paint blackPainter = new Paint();
     private int height;
     private int width;
-    private static final double MAX_DISTANCE_THROW = 500;
-    private static final double POWER_UNIT = 15;
-    private static final double MAX_POWER_THROW = MAX_DISTANCE_THROW / POWER_UNIT ;
+    private static final float MAX_DISTANCE_THROW = 500;
+    private static final float POWER_UNIT = 15;
+    private static final float MAX_POWER_THROW = MAX_DISTANCE_THROW / POWER_UNIT ;
     public static Vector playerInitialVector;
     private static final float BOARD_WALLS_HEIGHT = 75;
     private static final float BOARD_WALLS_WIDTH = 75;
@@ -126,8 +126,8 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
                 if(playerBall.hasFingerPressed()) {
-                    double distance = playerBall.getPosition().distance(this.playerBall.getFingerPosition());
-                    double powerOfThrow;
+                    float distance = playerBall.getPosition().distance(this.playerBall.getFingerPosition());
+                    float powerOfThrow;
                     if (distance > MAX_DISTANCE_THROW) {
                         powerOfThrow = MAX_POWER_THROW;
                     } else {
@@ -150,10 +150,10 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
                 double minY, maxY;
                 double x = event.getX();
                 double y = event.getY();
-                maxX = playerBall.getPosition().getX() + playerBall.getRadius() + 10;
-                minX = playerBall.getPosition().getX() - playerBall.getRadius() - 10;
-                maxY = playerBall.getPosition().getY() + playerBall.getRadius() + 10;
-                minY = playerBall.getPosition().getY() - playerBall.getRadius() - 10;
+                maxX = playerBall.getPosition().getX() + playerBall.getRadius() + 30;
+                minX = playerBall.getPosition().getX() - playerBall.getRadius() - 30;
+                maxY = playerBall.getPosition().getY() + playerBall.getRadius() + 30;
+                minY = playerBall.getPosition().getY() - playerBall.getRadius() - 30;
                 if(Utils.isBetween(x,minX,maxX) && Utils.isBetween(y,minY,maxY)) {
                     playerBall.setFingerActive(true);
                     playerBall.changeColor(Color.RED);
@@ -193,7 +193,7 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
             int i = r.nextInt(entities.size());
             MovableEntity me = null;
             if(entities.get(i) instanceof MovableEntity && (me = (MovableEntity) entities.get(i)).isMovable()) {
-                double acceleration = Utils.clamp(r.nextDouble() * 2, 0.5, 1);
+                float acceleration = Utils.clamp(r.nextFloat() * 2, 0.5f, 1f);
                 me.setVelocity(me.getxVelocity() / acceleration + 2, me.getyVelocity() / acceleration + 2);
                 me.setyVelocity(me.getyVelocity() / acceleration);
             }
@@ -206,15 +206,6 @@ public class Billaroid extends SurfaceView implements SurfaceHolder.Callback {
         playerInitialVector = new Vector(width*0.5+(BOARD_WALLS_WIDTH),height*0.20);
         playerBall.setPosition(playerInitialVector.getCopy());
         entities.add(playerBall);
-        /*for(int i = 0 ; i < 10 ; i++) {
-            // todo ya que que solo añadira una bola, pero es para testeos.
-            Ball b = new Ball(25);
-            entities.add(b);
-            b.changeColor(Color.rgb(r.nextFloat(), r.nextFloat(), r.nextFloat()));
-            b.setPosition(new Vector(r.nextInt(width), r.nextInt(height))); // Ponemos la bola en un lugar aleatorio.
-            b.setxVelocity(r.nextDouble() * 10);
-            b.setyVelocity(r.nextDouble() * 10);
-        }*/
         entities.addAll(Ball.getBiliardBalls(BOARD_WALLS_WIDTH,BOARD_WALLS_HEIGHT,width,height));
         for (int i = 0 ; i < 3 ; i++) {
             Hole holeRigth = new Hole();

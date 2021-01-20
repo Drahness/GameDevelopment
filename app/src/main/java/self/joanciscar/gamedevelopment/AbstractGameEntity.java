@@ -11,6 +11,7 @@ public abstract class AbstractGameEntity implements GameEntity {
     private boolean isDumpable = true;
     private boolean inGame = true;
 
+
     @Override
     public boolean isMovable() {
         return false;

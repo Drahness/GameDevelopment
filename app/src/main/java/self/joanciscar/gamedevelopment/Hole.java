@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 public class Hole extends AbstractGameEntity {
-    private static final double HOLE_RADIUS = 50;
+    private static final float HOLE_RADIUS = 50;
 
     @Override
     public void paint(Canvas canvas) {
@@ -14,7 +14,7 @@ public class Hole extends AbstractGameEntity {
 
 
     @Override
-    public void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width, boolean callOther) {
+    public void processDump(GameEntity gameEntity, float height, float width, float min_height, float min_width, boolean callOther) {
         if(gameEntity.isTangible()) {
             if(gameEntity instanceof Ball) {
                 Ball b = (Ball) gameEntity;

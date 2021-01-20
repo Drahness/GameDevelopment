@@ -6,26 +6,25 @@ public abstract class AbstractMovableEntity extends AbstractGameEntity implement
     private final Paint painter = new Paint();
     private Vector position;
     private final Vector velocity = new Vector(0,0);
-    public final double DECELERACION_POR_CHOQUE = 0.7;
-    public final double DECELERACION_POR_ENTORNO = 0.99;
-    private double mass = 1;
+    private float mass = 1;
     private boolean movable = true;
 
     public void setMovable(boolean movable) {
         this.movable = movable;
     }
 
+
     @Override
     public boolean isMovable() {
         return movable;
     }
     @Override
-    public double getMass() {
+    public float getMass() {
         return mass;
     }
 
     @Override
-    public void setMass(double mass) {
+    public void setMass(float mass) {
         this.mass = mass;
     }
 
@@ -41,22 +40,22 @@ public abstract class AbstractMovableEntity extends AbstractGameEntity implement
     }
 
     @Override
-    public double getxVelocity() {
+    public float getxVelocity() {
         return this.velocity.getX();
     }
 
     @Override
-    public void setxVelocity(double xVelocity) {
+    public void setxVelocity(float xVelocity) {
         this.velocity.setX(xVelocity);
     }
 
     @Override
-    public double getyVelocity() {
+    public float getyVelocity() {
         return this.velocity.getY();
     }
 
     @Override
-    public void setyVelocity(double yVelocity) {
+    public void setyVelocity(float yVelocity) {
         this.velocity.setY(yVelocity);
     }
 
@@ -65,7 +64,12 @@ public abstract class AbstractMovableEntity extends AbstractGameEntity implement
     }
 
     @Override
-    public double getSpeed() {
-        return Math.hypot(getxVelocity(),getyVelocity());
+    public float getSpeed() {
+        return (float) Math.hypot(getxVelocity(),getyVelocity());
+    }
+
+    @Override
+    public void setNextPosition() {
+        this.setPosition(new Vector(this.getxVelocity(),this.getyVelocity()));
     }
 }

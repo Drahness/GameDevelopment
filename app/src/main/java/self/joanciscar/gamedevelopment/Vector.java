@@ -6,16 +6,16 @@ import android.graphics.Point;
  * Representa un vector que puede ser la posicion o la velocidad.
  */
 public class Vector {
-    private double x;
-    private double y;
+    private float x;
+    private float y;
     public Vector(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
     public Vector(double x, double y) {
-        this.x = x;
-        this.y = y;
+        this.x = (float) x;
+        this.y = (float) y;
     }
 
     public Vector(int x, int y) {
@@ -23,32 +23,32 @@ public class Vector {
         this.y = y;
     }
 
-    public static double distanceInBetweenTwoPoints(int x1, int y1, int x2, int y2) {
+    public static float distanceInBetweenTwoPoints(int x1, int y1, int x2, int y2) {
         return Vector.distanceInBetweenTwoPoints((double) x1, y1, x2, y2);
     }
 
-    public static double distanceInBetweenTwoPoints(float x1, float y1, float x2, float y2) {
+    public static float distanceInBetweenTwoPoints(float x1, float y1, float x2, float y2) {
         return Vector.distanceInBetweenTwoPoints((double) x1, y1, x2, y2);
     }
 
-    public static double distanceInBetweenTwoPoints(double x1, double y1, double x2, double y2) {
-        return Math.hypot(x1 - x2, y1 - y2);
+    public static float distanceInBetweenTwoPoints(double x1, double y1, double x2, double y2) {
+        return (float) Math.hypot(x1 - x2, y1 - y2);
     }
 
     public double getAngleTo(Vector other) {
         return Vector.getAngle(this,other);
     }
 
-    public static double getAngle(Vector v1, Vector v2) {
+    public static float getAngle(Vector v1, Vector v2) {
         double alfa = Math.atan2((v1.y - v2.y),(v2.x - v2.x));
-        return Math.toDegrees(alfa);
+        return (float) Math.toDegrees(alfa);
     }
 
-    public Vector newVelocity(double units, Vector direction) {
+    public Vector newVelocity(float units, Vector direction) {
         return Vector.newVelocity(units,this,direction);
     }
-    public static Vector newVelocity(double units, Vector begining, Vector direction) {
-        double alfa = Math.atan2((direction.y - begining.y),(direction.x - begining.x));
+    public static Vector newVelocity(float units, Vector begining, Vector direction) {
+        float alfa = (float) Math.atan2((direction.y - begining.y),(direction.x - begining.x));
         //boolean inverseX = false, inverseY = false;
         /*if(begining.getX() > direction.getX()) {
             inverseX = true;
@@ -56,39 +56,39 @@ public class Vector {
         if(begining.getY() > direction.getY()) {
             inverseY = true;
         }*/
-        double x = units * Math.cos(alfa);
-        double y = units * Math.sin(alfa);
+        float x = (float) (units * Math.cos(alfa));
+        float y = (float) (units * Math.sin(alfa));
         /*return new Vector(
                 inverseX ? - x: x,
                 inverseY ? - y: y);*/
         return new Vector(x, y);
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public double distance(Vector other) {
+    public float distance(Vector other) {
         return this.distance(other.x, other.y);
     }
 
-    public double distance(float x2, float y2) {
+    public float distance(float x2, float y2) {
         return distanceInBetweenTwoPoints(this.x, this.y, x2, y2);
     }
 
-    public double distance(double x2, double y2) {
+    public float distance(double x2, double y2) {
         return distanceInBetweenTwoPoints(this.x, this.y, x2, y2);
     }
 
@@ -150,7 +150,7 @@ public class Vector {
         return this;
     }
 
-    public Vector mult(double multiplier) {
+    public Vector mult(float multiplier) {
         this.setX(this.getX() * multiplier);
         this.setY(this.getY() * multiplier);
         return this;
@@ -176,11 +176,11 @@ public class Vector {
         this.setY(another.getY());
         return this;
     }
-    public Vector addX(double x) {
+    public Vector addX(float x) {
         this.setX(this.getX()+x);
         return this;
     }
-    public Vector addY(double y) {
+    public Vector addY(float y) {
         this.setY(this.getY()+y);
         return this;
     }

@@ -3,7 +3,7 @@ package self.joanciscar.gamedevelopment;
 public class PlayerBall extends Ball {
     private final Vector fingerPosition = new Vector(0,0); // this needs to be fully sincronized. maybe a sigle instance and dump the other instances to this.
     private boolean isActive;
-    public PlayerBall(double radius) {
+    public PlayerBall(float radius) {
         super(radius);
     }
     public PlayerBall() {}
@@ -25,7 +25,7 @@ public class PlayerBall extends Ball {
         this.isActive = isActive;
     }
 
-    public void hitBall(double hitPower) {
+    public void hitBall(float hitPower) {
         // tengo la posicion
         Vector ballPosition = this.getPosition();
         // donde esta el dedo, es una copia por sincronizacion.

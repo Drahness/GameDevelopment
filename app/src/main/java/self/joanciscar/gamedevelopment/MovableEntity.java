@@ -1,35 +1,43 @@
 package self.joanciscar.gamedevelopment;
 
 public interface MovableEntity extends GameEntity {
-    double getMass();
+    public final float DECELERACION_POR_CHOQUE = 0.7f;
+    public final float DECELERACION_POR_ENTORNO = 0.99f;
+    float getMass();
 
-    void setMass(double mass);
+    void setMass(float mass);
 
-    void move(double height, double width, double min_height, double min_width);
+    void move(float height, float width, float min_height, float min_width);
 
     boolean isMoving();
 
     void stopMovement();
 
-    double getxVelocity();
+    Vector getVelocity();
+
+    float getxVelocity();
+
+    boolean isInContact(GameEntity another);
 
     default void setVelocity(Vector vector) {
         this.setxVelocity(vector.getX());
         this.setyVelocity(vector.getY());
     }
 
-    default void setVelocity(double xVelocity, double yVelocity) {
+    default void setVelocity(float xVelocity, float yVelocity) {
         this.setxVelocity(xVelocity);
         this.setyVelocity(yVelocity);
     }
 
-    void setxVelocity(double xVelocity);
+    void setxVelocity(float xVelocity);
 
-    double getyVelocity();
+    float getyVelocity();
 
-    void setyVelocity(double yVelocity);
+    void setyVelocity(float yVelocity);
 
     void transferEnergy(MovableEntity movableEntity);
 
-    double getSpeed();
+    float getSpeed();
+
+    void setNextPosition();
 }

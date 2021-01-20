@@ -6,24 +6,21 @@ public class Utils {
         return min <= value && value <= max;
     }
     public static boolean isBetween(float value,float min, float max) {
-        return isBetween((double) value,min,max);
+        return min <= value && value <= max;
     }
     public static boolean isBetween(int value,int min, int max) {
-        return isBetween((float)value,min,max);
+        return min <= value && value <= max;
     }
 
-    public static double clamp(int value,int min, int max) {
+    public static float clamp(int value,int min, int max) {
         return clamp((float)value,min,max);
     }
 
-    public static double clamp(float value,float min, float max) {
-        return clamp((double) value,min,max);
-    }
-    public static double clamp(double value,double min, double max) {
-        if(Double.compare(value,max) > 0) {
+    public static float clamp(float value,float min, float max) {
+        if(Float.compare(value,max) > 0) {
             return max;
         }
-        else if(Double.compare(value,min) < 0) {
+        else if(Float.compare(value,min) < 0) {
             return min;
         }
         else {
@@ -38,7 +35,7 @@ public class Utils {
      * @param max value permitted
      * @return 0 if it is in between, 1 or more if exceeds the maximum, -1 or less if exceeds minimum
      */
-    public static int isBetweenInt(double value,double min, double max) {
+    public static int isBetweenInt(float value,float min, float max) {
         if(isBetween(value,min,max)) {
             return 0;
         }

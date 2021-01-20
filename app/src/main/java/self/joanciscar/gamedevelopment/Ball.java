@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Ball extends AbstractMovableEntity {
-    public static final double DEFAULT_RADIUS = 35;
+    public static final float DEFAULT_RADIUS = 35;
     private static final int TEAM_RALLADA = 1;
     private static final int TEAM_LISA = 2;
     private static final int NEGRA = 3;
@@ -23,7 +23,7 @@ public class Ball extends AbstractMovableEntity {
     private static final int PURPLE = Color.argb(255, 214, 0, 255);
     private static final int BRWON = Color.argb(255, 255, 100, 0);
     private static final int ORANGE = Color.argb(255, 255, 200, 100);
-    private final double radius;
+    private final float radius;
     private String number;
     private int team;
 
@@ -42,21 +42,21 @@ public class Ball extends AbstractMovableEntity {
         this(DEFAULT_RADIUS);
     }
 
-    public Ball(double radius) {
+    public Ball(float radius) {
         this.radius = radius;
     }
 
-    public static List<GameEntity> getBiliardBalls(double minX, double minY, double maxX, double maxY) {
+    public static List<GameEntity> getBiliardBalls(float minX, float minY, float maxX, float maxY) {
         List<GameEntity> balls = new ArrayList<>();
         Ball b;
         int x = 0;
         int ball = 0;
         Vector ballPosition;
         int color;
-        double posX = minX + maxX / 2;
-        double posY = minY + maxY / 1.5;
+        float posX = minX + maxX / 2f;
+        float posY = minY + maxY / 1.5f;
         for (int i = 1; i < 16; i++) {
-            double posYBall = posY + (x* DEFAULT_RADIUS * 2);
+            double posYBall = posY + (x* DEFAULT_RADIUS * 2) + 10;
             switch (i) {
                 case 1: // LISA
                     color = Color.YELLOW;
@@ -74,7 +74,7 @@ public class Ball extends AbstractMovableEntity {
                     break;
                 case 4:
                     color = PURPLE;
-                    posYBall = posY + (3* DEFAULT_RADIUS * 2); // correccion
+                    posYBall = posY + (3* DEFAULT_RADIUS * 2) + 10; // correccion
                     ballPosition = new Vector(posX- (3 * (DEFAULT_RADIUS)), posYBall);
                     break;
                 case 5:
@@ -93,7 +93,7 @@ public class Ball extends AbstractMovableEntity {
                     break;
                 case 8: // NEGRA
                     color = Color.BLACK;
-                    posYBall = posY + (2* DEFAULT_RADIUS * 2);
+                    posYBall = posY + (2* DEFAULT_RADIUS * 2) + 10;
                     ballPosition = new Vector(posX, posYBall);
                     break;
                 case 9: // RALLADA
@@ -146,39 +146,46 @@ public class Ball extends AbstractMovableEntity {
         return balls; //Todo
     }
 
-    public void move(double height, double width, double min_height, double min_width) {
+    public void move(float height, float width, float min_height, float min_width) {
         height = height - radius;
         width = width - radius;
         min_height = min_height + radius;
         min_width = min_width + radius;
-        double nextY = (this.getyVelocity()) + this.getPosition().getY();
-        double nextX = (this.getxVelocity()) + this.getPosition().getX();
+        float nextY = (this.getyVelocity()) + this.getPosition().getY();
+        float nextX = (this.getxVelocity()) + this.getPosition().getX();
         int betX = Utils.isBetweenInt(nextX, min_width, width);
         int betY = Utils.isBetweenInt(nextY, min_height, height);
         // Choque con la pared.
-        if (betX != 0 || betY != 0) {
-            if (betX == 1) {
-                nextX -= (nextX - width);
-                setxVelocity(-(getxVelocity() * DECELERACION_POR_CHOQUE));
-            } else if (betX == -1) {
-                nextX = min_width;
-                setxVelocity(-(getxVelocity() * DECELERACION_POR_CHOQUE));
-            }
-            if (betY == 1) {
-                nextY -= (nextY - height);
-                setyVelocity(-(getyVelocity() * DECELERACION_POR_CHOQUE));
-            } else if (betY == -1) {
-                nextY = min_height;
-                setyVelocity(-(getyVelocity() * DECELERACION_POR_CHOQUE));
-            }
+        if (betX == 1) {
+            nextX -= (nextX - width);
+            setxVelocity(-(getxVelocity() * DECELERACION_POR_CHOQUE));
+        }
+        else if (betX == -1) {
+            nextX = min_width;
+            setxVelocity(-(getxVelocity() * DECELERACION_POR_CHOQUE));
+        }
+        if (betY == 1) {
+            nextY -= (nextY - height);
+            setyVelocity(-(getyVelocity() * DECELERACION_POR_CHOQUE));
+        }
+        else if (betY == -1) {
+            nextY = min_height;
+            setyVelocity(-(getyVelocity() * DECELERACION_POR_CHOQUE));
+        }
+        if (this.getVelocity().distance(new Vector(0, 0)) < 1) {
+            this.stopMovement();
         } else {
-            if (this.getVelocity().distance(new Vector(0, 0)) < 0.1) {
-                this.stopMovement();
-            } else {
-                setVelocity(getxVelocity() * DECELERACION_POR_ENTORNO , getyVelocity() * DECELERACION_POR_ENTORNO);
-            }
+            this.setVelocity(getxVelocity() * DECELERACION_POR_ENTORNO , getyVelocity() * DECELERACION_POR_ENTORNO);
         }
         this.setPosition(new Vector(nextX, nextY));
+    }
+
+    @Override
+    public boolean isInContact(GameEntity another) {
+        if(another instanceof Ball) {
+            return this.isInContact((Ball) another);
+        }
+        return false;
     }
 
     @Override
@@ -211,21 +218,20 @@ public class Ball extends AbstractMovableEntity {
     }
 
     @Override
-    public void processDump(GameEntity gameEntity, double height, double width, double min_height, double min_width,boolean callOther) {
+    public void processDump(GameEntity gameEntity, float height, float width, float min_height, float min_width,boolean callOther) {
         if (gameEntity.isTangible()) {
             if (gameEntity.isMovable()) {
-                if (gameEntity instanceof Ball) {
-                    Ball anotherBall = (Ball) gameEntity;
-                    // A hit is being produced or not?
-                    if (isInContact(anotherBall)) {
-                        this.transferEnergy(anotherBall);
-                        this.move(height, width, min_height, min_width);
-                        anotherBall.move(height, width, min_height, min_width);
-                        if(callOther) {
-                            gameEntity.processDump(this, height, width, min_height, min_width, false);
-                        }
-                    }
+                MovableEntity anotherBall = (MovableEntity) gameEntity;
+                if (isInContact(anotherBall)) {
+                    this.transferEnergy(anotherBall);
+                    this.move(height, width, min_height, min_width);
+                    anotherBall.move(height, width, min_height, min_width);
+                    /*if(callOther) { Esto da mas problemas de los que soluciona
+
+                        gameEntity.processDump(this, height, width, min_height, min_width, false);
+                    }*/
                 }
+
             }
         }
     }
@@ -240,7 +246,7 @@ public class Ball extends AbstractMovableEntity {
      * @param min_width
      */
     @Deprecated
-    public void simpleDump(GameEntity gameEntity, double height, double width, double min_height, double min_width) {
+    public void simpleDump(GameEntity gameEntity, float height, float width, float min_height, float min_width) {
         if (gameEntity.isTangible()) {
             if (gameEntity.isMovable()) {
                 if (gameEntity instanceof Ball) {
@@ -260,9 +266,9 @@ public class Ball extends AbstractMovableEntity {
     }
 
     public void transferEnergy(MovableEntity anotherBall) {
-        double dx = anotherBall.getPosition().getX() - this.getPosition().getX();
-        double dy = anotherBall.getPosition().getY() - this.getPosition().getY();
-        double dist = this.getPosition().distance(anotherBall.getPosition());
+        float dx = anotherBall.getPosition().getX() - this.getPosition().getX();
+        float dy = anotherBall.getPosition().getY() - this.getPosition().getY();
+        float dist = this.getPosition().distance(anotherBall.getPosition());
         /*if (dist == 0) {
             dx = 0;
             dy = 0;
@@ -270,7 +276,14 @@ public class Ball extends AbstractMovableEntity {
         dx /= dist;
         dy /= dist;
         //}
-        double scale = (dx * this.getxVelocity() + dy * this.getyVelocity()) - (dx * anotherBall.getxVelocity() + dy * anotherBall.getyVelocity());
+
+        // transferir energia recursivamente, comprobar primero si estan siendo golpeadas y pasarle
+        // el control a la bola golpeada para que se mueva
+        float scale = (dx * this.getxVelocity() + dy * this.getyVelocity()) - (dx * anotherBall.getxVelocity() + dy * anotherBall.getyVelocity());
+        float thisxvel = this.getxVelocity() - (dx * scale);
+        float thisyvel = this.getyVelocity() - (dy * scale);
+        float anotherxVel = anotherBall.getxVelocity() + (dx * scale);
+        float anotheryVel = anotherBall.getyVelocity() + (dy * scale);
         this.setVelocity(
                 this.getxVelocity() - (dx * scale),
                 this.getyVelocity() - (dy * scale)
